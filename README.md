@@ -76,3 +76,44 @@ Practice materials for "Creating Web Services with Go" course
     * Use `Encoding.DecodeString(s string) ([]byte, error)` method to consume
   * **multipart/form-data** - uses a HTTP form to submit the raw data
     * Use `Request.FormFile(key string) (multipart.File, *multipart.FileHeader, error)` method to consume
+
+### Using WebSockets
+* WebSocket Flow:
+  * Client sends HTTP GET request
+    * Connection: Upgrade
+    * Upgrade: websocket
+    * Sec-WebSocket-Key: key
+  * Server responds with status code 101
+    * Switching Protocols
+    * Upgrade: websocket
+    * Connection: Upgrade
+    * Sec-WebSocket-Accept: key
+* Uses for WebSockets:
+  * Chat Apps
+  * Multiplayer Games
+  * Stock Tickers
+  * Realtime Dashboards
+* Creating WebSockets in Go via `golang.org/x/net/websocket` package
+  * https://pkg.go.dev/golang.org/x/net/websocket?tab=doc
+  * `websocket.Conn` struct:
+    ```go
+    type Conn struct {
+        PayloadType byte
+        MaxPayloadBytes int
+    }
+    ```
+  * `websocket.Codec` struct:
+    ```go
+    type Codec struct {
+        Marshal func(v interface{}) (data []byte, payloadType byte, err error)
+        Unmarshal func(data []byte, payloadType byte, v interface{}) (err error)
+    }
+    ```
+  * `codec.Receive()` method
+    ```go
+    func (cd Codec) Receive(ws *Conn, v interface{}) (err error)
+    ```
+  * `codec.Send()` method
+    ```go
+    func (cd Codec) Send(ws *Conn, v interface{}) (err error)
+    ```
