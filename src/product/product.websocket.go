@@ -1,3 +1,6 @@
+/*
+Package product - This file contains code for the WebSockets module
+*/
 package product
 
 import (

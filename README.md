@@ -117,3 +117,61 @@ Practice materials for "Creating Web Services with Go" course
     ```go
     func (cd Codec) Send(ws *Conn, v interface{}) (err error)
     ```
+
+### Using Templating
+* Template Packages:
+  * `text/template`: base functionality for working with templates in Go
+    * Refer to https://golang.org/pkg/text/template for more details
+  * `html/template`: same interface but with added security for HTML output
+    * Refer to https://golang.org/pkg/html/template for more details
+* Functions:
+  * `template.New()` function
+    ```go
+    func New(name string) *Template
+    ```
+  * `Template.Parse()` method
+    ```go
+    func (t *Template) Parse(text string) (*Template, error)
+    ```
+  * `Template.Execute()` method
+    ```go
+    func (t *Template) Execute(wr io.Writer, data interface{}) error
+    ```
+* Pipelines
+  * Definition: *command or sequence of commands*
+    * Simple value (argument)
+    * Function or method call
+    * Can accept arguments
+  * Examples:
+    * Static values or texts: `{{ "Hello" }}` or `{{ 1234 }}`
+    * Struct fields: `{{ .Message }}`
+    * Function calls: `{{ println "Hi" }}`
+    * Method calls: `{{ .SayHello }}` or `{{ .SaySomething "Bye" }}`
+    * Chained: `{{ "Hello" | .SaySomething | printf "%s %s" "World" }}`
+* Pipeline Looping with `{{ range pipeline }} T1 {{ end }}`
+  * The pipeline looping will output nothing if the array/slice/map structure has 0 length
+  * With optional ELSE statement: `{{ range pipeline }} T1 {{ else }} T2 {{ end }}`
+    * This will output T2 if the array/slice/map structure has 0 length
+  * If we need to access both index and element: `{{ range $index, $element := pipeline }} T1 {{ end }}`
+* Global Template Functions
+  * `and`: `{{if and true true true}} {{end}}`
+  * `or`: `{{if or true false true}} {{end}}`
+  * `index`: `{{index . 1}}`
+  * `len`: `{{len .}}`
+  * `not`: `{{if not false}} {{end}}`
+  * `print`, `printf`, `println`: `{{println "hey"}}`
+* Global Template Operators
+  * `eq`: `arg1 == arg2`
+  * `ne`: `arg1 != arg2`
+  * `lt`: `arg1 < arg2`
+  * `le`: `arg1 <= arg2`
+  * `gt`: `arg1 > arg2`
+  * `ge`: `arg1 >= arg2`
+* Custom Template Functions
+  * Define custom functions using `Template.Funcs()` method
+    ```go
+    func (t *Template) Funcs(funcMap FuncMap) *Template
+    
+    type FuncMap map[string]interface{}
+    ```
+  * Custom functions can only return a single value, or a single value/error
